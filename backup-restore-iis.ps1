@@ -21,7 +21,7 @@ Function CheckWindowsVersion() {
 		#2008+ share backup methods
 		return "2008";
 	} ElseIf ($OS.Version.Major -eq 5 -and $OS.Version.Minor -ge 1) {
-		#This XP and 2003 share backup methods
+		#XP and 2003 share backup methods
 		return "2003";
 	} Else {
 		return "Incompatible";
@@ -197,11 +197,10 @@ Function BackupIISConfig() {
 		$Backup = "$WinDir\System32\cscript.exe $IisBackPath /backup /b letsencrypt$TimeStamp"
 		Write-Host $Backup
 		iex $Backup
-		
-		
+	} Else {
+		Write-Error "Something unexpected went wrong!"
+		return $False
 	}
-	
-	
 }
 
 BackupIISConfig;
