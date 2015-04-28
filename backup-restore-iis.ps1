@@ -197,6 +197,8 @@ Function BackupIISConfig() {
 		$Backup = "$WinDir\System32\cscript.exe $IisBackPath /backup /b letsencrypt$TimeStamp"
 		Write-Host $Backup
 		iex $Backup
+		
+		#TODO: Verify backups was successful.
 	} Else {
 		Write-Error "Something unexpected went wrong!"
 		return $False
