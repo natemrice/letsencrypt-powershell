@@ -187,7 +187,7 @@ Function BackupIISConfig() {
 				Remove-Item iisback.zip
 				$IisBackPath = (Get-Location).Path + "\iisback.vbs"
 			} Catch {
-				Write-Error "Failed to find IisBack.zip and failed to create it."
+				Write-Error "Failed to find IisBack.vbs and failed to create it."
 				return $False
 			}
 		} Else {
