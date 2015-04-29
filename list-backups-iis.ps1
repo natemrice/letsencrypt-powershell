@@ -1,3 +1,16 @@
+# ------------------------------------------------------------------------
+# NAME: backup-restore-iis.ps1
+# AUTHOR: Nathan Rice, naterice.com
+# DATE: 2015/04/28
+#
+# KEYWORDS: letsencrypt
+#
+# COMMENTS: This file will list backups for IIS on Windows 2003+ machines.
+#
+# TODO: More robust error handling.
+#
+# ------------------------------------------------------------------------
+
 Function ListBackups(){
 	If (Get-Command Get-WebConfigurationBackup -CommandType Cmdlet -errorAction SilentlyContinue) {
 	#2008+ Backups
