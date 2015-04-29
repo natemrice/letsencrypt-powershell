@@ -18,7 +18,7 @@ Function ListBackups(){
 		ForEach ($Backup In Get-WebConfigurationBackup) {
 			$BackupName = $Backup.Name
 			$BackupDate = $Backup.CreationDate
-			If ($BackupLocation -like "letsencrypt*"){
+			If ($BackupName -like "letsencrypt*"){
 				Write-Host "$BackupIndex.) $BackupName - $BackupDate" -foregroundcolor green
 			} Else {
 				Write-Host "$BackupIndex.) $BackupName - $BackupDate"
