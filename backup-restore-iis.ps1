@@ -184,24 +184,24 @@ Function BackupIISConfig() {
 				$Shell = New-Object -Com Shell.Application;
 				$ZipFile = $Shell.NameSpace((Get-Location).Path + "\iisback.zip");
 				$Shell.NameSpace((Get-Location).Path).CopyHere($ZipFile.Items());
-				Remove-Item iisback.zip
-				$IisBackPath = (Get-Location).Path + "\iisback.vbs"
+				Remove-Item iisback.zip;
+				$IisBackPath = (Get-Location).Path + "\iisback.vbs";
 			} Catch {
-				Write-Error "Failed to find IisBack.vbs and failed to create it."
-				return $False
+				Write-Error "Failed to find IisBack.vbs and failed to create it.";
+				return $False;
 			}
 		} Else {
-			$IisBackPath = "$WinDir\System32\iisback.vbs"
+			$IisBackPath = "$WinDir\System32\iisback.vbs";
 		}
 		
-		$Backup = "$WinDir\System32\cscript.exe $IisBackPath /backup /b letsencrypt$TimeStamp"
-		Write-Host $Backup
-		iex $Backup
+		$Backup = "$WinDir\System32\cscript.exe $IisBackPath /backup /b letsencrypt$TimeStamp";
+		Write-Host $Backup;
+		iex $Backup;
 		
 		#TODO: Verify backups was successful.
 	} Else {
-		Write-Error "Something unexpected went wrong!"
-		return $False
+		Write-Error "Something unexpected went wrong!";
+		return $False;
 	}
 }
 
