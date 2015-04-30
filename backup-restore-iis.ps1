@@ -207,4 +207,30 @@ Function BackupIISConfig() {
 	}
 }
 
-BackupIISConfig;
+#BackupIISConfig;
+
+Function BackupExists() {
+	
+
+
+}
+
+Function RestoreIISConfig {
+	param([string]$BackupName)
+
+	#Sanity checks
+	$WindowsVersion = CheckWindowsVersion
+	If ($WindowsVersion -eq "Incompatible") {
+		Write-Error [string]"This version of Windows is incompatible.";
+		return $False;
+	} ElseIf (!(CheckIISIsInstalled)) {
+		Write-Error [string]"IIS was not detected.";
+		return $False;
+	} ElseIf ($BackupName.Length -eq 0) {
+		Write-Error [string]"Backup name is a required parameter."
+		return $False
+	}
+
+	
+}
+

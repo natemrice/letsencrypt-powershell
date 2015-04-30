@@ -12,6 +12,16 @@
 # ------------------------------------------------------------------------
 
 Function ListBackups(){
+	#Work in progress, going to return an array of backups
+	$objBackups = @()
+	$objBackup = New-Module -AsCustomObject -ScriptBlock {
+    [string]$Name=$null
+	[System.Nullable``1[[System.DateTime]]]$Date=$null
+    Function Age {
+        Write-Output ($Date-(Get-Date)).ToString()
+    }
+    Export-ModuleMember -Variable * -Function *}
+
 	If (Get-Command Get-WebConfigurationBackup -CommandType Cmdlet -errorAction SilentlyContinue) {
 	#2008+ Backups
 		$BackupIndex = 0;
