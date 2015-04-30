@@ -1,9 +1,9 @@
 ###TODO:
  - Figuring out how to support various client security enhancements like
-		1. ~~tuning cipher suites~~
-		2. enabling HTTP -> HTTPS redirection
-		3. enabling OCSP pinning
-		4. setting HTTP headers (either universal or user-agent dependent)
+	1. ~~tuning cipher suites~~
+	2. enabling HTTP -> HTTPS redirection
+	3. enabling OCSP pinning
+	4. setting HTTP headers (either universal or user-agent dependent)
 
  - ~~Figuring out how to support "rollback" of IIS configuration changes.~~
  
