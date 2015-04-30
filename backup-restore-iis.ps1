@@ -229,7 +229,7 @@ Function BackupIISConfig() {
 
 #BackupIISConfig;
 
-Function RestoreIISConfig() {
+Function RestoreIISConfig {
 	param([string]$BackupName)
 	
 	$WinDir = $env:windir;
@@ -256,9 +256,9 @@ Function RestoreIISConfig() {
 			Restore-WebConfiguration -Name $BackupName;
 			Return $True;
 		} Catch {
-			Write-Error $_.Exception.GetType().FullName
-			Write-Error $_.Exception.Message
-			Return $False
+			Write-Error $_.Exception.GetType().FullName;
+			Write-Error $_.Exception.Message;
+			Return $False;
 		}
 	} ElseIf ($WindowsVersion = "2003") {
 		$IisBackPath = CheckForIisBackVbs;
@@ -282,7 +282,7 @@ Function RestoreIISConfig() {
 
 #RestoreIISConfig letsencrypt20150428142348;
 
-Function RestoreMostRecent(){
+Function RestoreMostRecent (){
 	$MostRecentBackup = .\list-backups-iis.ps1 | Sort-Object -Property Date -descending | Where-Object {$_.Name -like "letsencrypt*"} | Select-Object -First 1;
 	
 	RestoreIISConfig $MostRecentBackup.Name;
