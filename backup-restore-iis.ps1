@@ -144,9 +144,10 @@ AAAAAQABAF0AAAA3FQAAAAA=
 $IisBack = [System.Convert]::FromBase64String($Base64);
 
 Function CheckForIisBackVbs() {
+	$WinDir = $env:windir;
 	If (Test-Path "$WinDir\System32\iisback.vbs") {
 		Return "$WinDir\System32\iisback.vbs";
-	} ElseIf (Test-Path (Get-Location).Path + "\iisback.vbs") {
+	} ElseIf (Test-Path ((Get-Location).Path + "\iisback.vbs")) {
 		#Current running directory
 		Return (Get-Location).Path + "\iisback.vbs";
 	} Else {
@@ -200,25 +201,25 @@ Function BackupIISConfig() {
 	#If the Backup-WebConfiguration command doesn't exist, we'll
 	#use iisback.vbs. If it doesn't exist, we'll create it from
 	#the embedded base64.
-		$IisBackPath = CheckForIisBackVbs
+		$IisBackPath = CheckForIisBackVbs;
 		If ($IisBackPath.Length -eq 0){Return $False}
 		
-		$BeforeBackups = .\list-backups-iis.ps1
+		$BeforeBackups = .\list-backups-iis.ps1;
 		
 		$Backup = "$WinDir\System32\cscript.exe $IisBackPath /backup /b letsencrypt$TimeStamp";
 		#Write-Host $Backup;
 		iex $Backup;
 		
-		$AfterBackups = .\list-backups-iis.ps1
+		$AfterBackups = .\list-backups-iis.ps1;
 		
 		If ($BeforeBackups -eq $AfterBackups) {
 			#If backups are exactly the same, backups
 			#failed.
-			Write-Error "Backups seem to have failed!"
-			Return $False
+			Write-Error "Backups seem to have failed!";
+			Return $False;
 		} Else {
 			#Success
-			Return $True
+			Return $True;
 		}
 	} Else {
 		Write-Error "Something unexpected went wrong!";
@@ -231,7 +232,8 @@ Function BackupIISConfig() {
 Function RestoreIISConfig {
 	param([string]$BackupName)
 	
-	$BackupList = .\list-backups-iis.ps1
+	$WinDir = $env:windir;
+	$BackupList = .\list-backups-iis.ps1;
 
 	#Sanity checks
 	$WindowsVersion = CheckWindowsVersion
@@ -242,17 +244,24 @@ Function RestoreIISConfig {
 		Write-Error "IIS was not detected.";
 		Return $False;
 	} ElseIf ($BackupName.Length -eq 0) {
-		Write-Error "Backup name is a required parameter."
-		Return $False
+		Write-Error "Backup name is a required parameter.";
+		Return $False;
 	} ElseIf (($BackupList -Match $BackupName).Count -eq 0) {
-		Write-Error "Backup set does not contain the backup!"
-		Return $False
+		Write-Error "Backup set does not contain the backup!";
+		Return $False;
 	}
 
 	If (Get-Command Backup-WebConfiguration -CommandType Cmdlet -errorAction SilentlyContinue) {
-	
+		Try {
+			Restore-WebConfiguration -Name $BackupName;
+			Return $True;
+		} Catch {
+			Write-Error $_.Exception.GetType().FullName
+			Write-Error $_.Exception.Message
+			Return $False
+		}
 	} ElseIf ($WindowsVersion = "2003") {
-		$IisBackPath = CheckForIisBackVbs
+		$IisBackPath = CheckForIisBackVbs;
 		If ($IisBackPath.Length -eq 0){Return $False}
 		
 		$Restore = "$WinDir\System32\cscript.exe $IisBackPath /restore /b $BackupName";
@@ -260,10 +269,10 @@ Function RestoreIISConfig {
 		
 		If ($RestoreResults -like "*HIGHEST_VERSION has been RESTORED*") {
 			#Success
-			Return $True
+			Return $True;
 		} Else {
-			Write-Error "Restore failed: `n $RestoreResults"
-			Return $False
+			Write-Error "Restore failed: `n $RestoreResults";
+			Return $False;
 		}
 	} Else {
 		Write-Error "Something unexpected went wrong!";
@@ -271,4 +280,4 @@ Function RestoreIISConfig {
 	}
 }
 
-RestoreIISConfig letsencrypt20150428142348
+#RestoreIISConfig letsencrypt20150428142348;
