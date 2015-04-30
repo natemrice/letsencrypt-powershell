@@ -208,14 +208,14 @@ Function BackupIISConfig() {
 		
 		$Backup = "$WinDir\System32\cscript.exe $IisBackPath /backup /b letsencrypt$TimeStamp";
 		#Write-Host $Backup;
-		iex $Backup;
+		$BackupResults = ((iex $Backup) | Out-String);
 		
 		$AfterBackups = .\list-backups-iis.ps1;
 		
 		If ($BeforeBackups -eq $AfterBackups) {
 			#If backups are exactly the same, backups
 			#failed.
-			Write-Error "Backups seem to have failed!";
+			Write-Error "Backups failed: `n $BackupResults";
 			Return $False;
 		} Else {
 			#Success
@@ -229,7 +229,7 @@ Function BackupIISConfig() {
 
 #BackupIISConfig;
 
-Function RestoreIISConfig {
+Function RestoreIISConfig() {
 	param([string]$BackupName)
 	
 	$WinDir = $env:windir;
@@ -281,3 +281,11 @@ Function RestoreIISConfig {
 }
 
 #RestoreIISConfig letsencrypt20150428142348;
+
+Function RestoreMostRecent(){
+	$MostRecentBackup = .\list-backups-iis.ps1 | Sort-Object -Property Date -descending | Where-Object {$_.Name -like "letsencrypt*"} | Select-Object -First 1;
+	
+	RestoreIISConfig $MostRecentBackup.Name;
+}
+
+#RestoreMostRecent
