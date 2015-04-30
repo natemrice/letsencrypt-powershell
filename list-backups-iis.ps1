@@ -1,5 +1,5 @@
 # ------------------------------------------------------------------------
-# NAME: backup-restore-iis.ps1
+# NAME: list-backups-iis.ps1
 # AUTHOR: Nathan Rice, naterice.com
 # DATE: 2015/04/28
 #
