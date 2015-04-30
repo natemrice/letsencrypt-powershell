@@ -12,6 +12,8 @@
 # ------------------------------------------------------------------------
 
 Function Get-BackupObject() {
+	#ScriptBlocks don't seem to work in PS 2.0
+	#Need to rework this...
 	$objBackup = New-Module -AsCustomObject -ScriptBlock {
     [string]$Name=$null
 	[System.Nullable``1[[System.DateTime]]]$Date=$null
@@ -45,7 +47,6 @@ Function ListBackups(){
 			Write-Error "There was an error initializing the IIS WMI object.";
 			return $False;
 		}
-			
 		$BackupIndex = 0;
 		While ($True) {
 			Try {
@@ -54,17 +55,20 @@ Function ListBackups(){
 				$BackupDate = $BackupObj.BackupDateTimeOut;
 
 				$objBackup = Get-BackupObject
-				$objBackup.Name = $BackupLocation;
-				$objBackup.Date = [datetime]$BackupDate;
+				$objBackup.Name = $BackupLocation.Trim();
+				
+				#TODO: We are parsing the date from the string. Not sure if this will be problematic for
+				#other geographic locations or not. Further testing is probably in order.
+				$objBackup.Date = [datetime]::ParseExact($BackupDate.Substring(0,$BackupDate.IndexOf(".")),"yyyyMMddHHmmss",[System.Globalization.CultureInfo]::InvariantCulture);
 
 				$objBackups += $objBackup;
 				
 				$BackupIndex++;
 			} Catch {
-				Exit;
+				Break;
 			}
 		}
-		
+
 		Return $objBackups;
 	}
 }

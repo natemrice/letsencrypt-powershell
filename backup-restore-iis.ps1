@@ -150,10 +150,10 @@ Function BackupIISConfig() {
 	#Sanity checks
 	$WindowsVersion = CheckWindowsVersion
 	If ($WindowsVersion -eq "Incompatible") {
-		Write-Error [string]"This version of Windows is incompatible.";
+		Write-Error "This version of Windows is incompatible.";
 		return $False;
 	} ElseIf (!(CheckIISIsInstalled)) {
-		Write-Error [string]"IIS was not detected.";
+		Write-Error "IIS was not detected.";
 		return $False;
 	}
 
@@ -195,12 +195,22 @@ Function BackupIISConfig() {
 			$IisBackPath = "$WinDir\System32\iisback.vbs";
 		}
 		
+		$BeforeBackups = .\list-backups-iis.ps1
+		
 		$Backup = "$WinDir\System32\cscript.exe $IisBackPath /backup /b letsencrypt$TimeStamp";
 		#Write-Host $Backup;
 		iex $Backup;
 		
+		$AfterBackups = .\list-backups-iis.ps1
 		
-		#TODO: Verify backups was successful.
+		If ($BeforeBackups -eq $AfterBackups) {
+			#If backups are exactly the same, backups
+			#failed.
+			Write-Error "Backups seem to have failed!"
+			return $False
+		} Else {
+			return $True
+		}
 	} Else {
 		Write-Error "Something unexpected went wrong!";
 		return $False;
@@ -209,28 +219,30 @@ Function BackupIISConfig() {
 
 #BackupIISConfig;
 
-Function BackupExists() {
-	
-
-
-}
-
 Function RestoreIISConfig {
 	param([string]$BackupName)
+	
+	$BackupList = .\list-backups-iis.ps1
 
 	#Sanity checks
 	$WindowsVersion = CheckWindowsVersion
 	If ($WindowsVersion -eq "Incompatible") {
-		Write-Error [string]"This version of Windows is incompatible.";
+		Write-Error "This version of Windows is incompatible.";
 		return $False;
 	} ElseIf (!(CheckIISIsInstalled)) {
-		Write-Error [string]"IIS was not detected.";
+		Write-Error "IIS was not detected.";
 		return $False;
 	} ElseIf ($BackupName.Length -eq 0) {
-		Write-Error [string]"Backup name is a required parameter."
+		Write-Error "Backup name is a required parameter."
 		return $False
+	} ElseIf (!($BackupList.Name -contains $BackupName)) {
+		Write-Error "Backup set does not contain the backup!"
+		#return $False
 	}
 
-	
+	Write-Output "ok"
+	Write-Output $BackupName
+	Write-Output $BackupList
 }
 
+#RestoreIISConfig letsencrypt-20150428152305
