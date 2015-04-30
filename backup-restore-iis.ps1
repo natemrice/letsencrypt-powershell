@@ -19,12 +19,12 @@ Function CheckWindowsVersion() {
 	$OS = [Environment]::OSVersion
 	If ($OS.Version.Major -ge 6) {
 		#2008+ share backup methods
-		return "2008";
+		Return "2008";
 	} ElseIf ($OS.Version.Major -eq 5 -and $OS.Version.Minor -ge 1) {
 		#XP and 2003 share backup methods
-		return "2003";
+		Return "2003";
 	} Else {
-		return "Incompatible";
+		Return "Incompatible";
 	}
 }
 
@@ -33,10 +33,10 @@ Function CheckIISIsInstalled() {
 	#to suppress output and it's PS 2.0+ compatible.
 	Try {
 		Get-Service W3SVC -ErrorAction Stop >$null 2>&1;
-		return $True;
+		Return $True;
 	} Catch {
 		#$_.Exception.Message;
-		return $False;
+		Return $False;
 	}
 }
 
@@ -143,6 +143,28 @@ AAAAAQABAF0AAAA3FQAAAAA=
 "@
 $IisBack = [System.Convert]::FromBase64String($Base64);
 
+Function CheckForIisBackVbs() {
+	If (Test-Path "$WinDir\System32\iisback.vbs") {
+		Return "$WinDir\System32\iisback.vbs";
+	} ElseIf (Test-Path (Get-Location).Path + "\iisback.vbs") {
+		#Current running directory
+		Return (Get-Location).Path + "\iisback.vbs";
+	} Else {
+		#If iisback.vbs doesn't exist, create it.
+		Try {
+			Set-Content -Path "iisback.zip" -Value $IisBack -Encoding Byte;
+			$Shell = New-Object -Com Shell.Application;
+			$ZipFile = $Shell.NameSpace((Get-Location).Path + "\iisback.zip");
+			$Shell.NameSpace((Get-Location).Path).CopyHere($ZipFile.Items());
+			Remove-Item iisback.zip;
+			Return (Get-Location).Path + "\iisback.vbs";
+		} Catch {
+			Write-Error "Failed to find IisBack.vbs and failed to create it.";
+			Return "";
+		}
+	}
+}
+
 Function BackupIISConfig() {
 	$WinDir = $env:windir;
 	$TimeStamp = get-date -uFormat "%Y%m%d%H%M%S";
@@ -151,10 +173,10 @@ Function BackupIISConfig() {
 	$WindowsVersion = CheckWindowsVersion
 	If ($WindowsVersion -eq "Incompatible") {
 		Write-Error "This version of Windows is incompatible.";
-		return $False;
+		Return $False;
 	} ElseIf (!(CheckIISIsInstalled)) {
 		Write-Error "IIS was not detected.";
-		return $False;
+		Return $False;
 	}
 
 	#If the Backup-WebConfiguration command exists we'll use that
@@ -164,36 +186,22 @@ Function BackupIISConfig() {
 			Backup-WebConfiguration -Name "letsencrypt-$TimeStamp" -ErrorAction Stop;
 		} Catch {
 			Write-Error $_.Exception.Message;
-			return $False;
+			Return $False;
 		}
 
 		If (!(Test-Path "$WinDir\System32\inetsrv\backup\letsencrypt-$TimeStamp")) {
 			Write-Error "Backup directory does not exist. IIS backup seems to have failed.";
-			return $False;
+			Return $False;
 		} Else {
 			#Backup success!
-			return $True;
+			Return $True;
 		}
 	} ElseIf ($WindowsVersion = "2003") {
 	#If the Backup-WebConfiguration command doesn't exist, we'll
 	#use iisback.vbs. If it doesn't exist, we'll create it from
 	#the embedded base64.
-		If (!(Test-Path "$WinDir\System32\iisback.vbs")) {
-			#If iisback.vbs doesn't exist, create it.
-			Try {
-				Set-Content -Path "iisback.zip" -Value $IisBack -Encoding Byte;
-				$Shell = New-Object -Com Shell.Application;
-				$ZipFile = $Shell.NameSpace((Get-Location).Path + "\iisback.zip");
-				$Shell.NameSpace((Get-Location).Path).CopyHere($ZipFile.Items());
-				Remove-Item iisback.zip;
-				$IisBackPath = (Get-Location).Path + "\iisback.vbs";
-			} Catch {
-				Write-Error "Failed to find IisBack.vbs and failed to create it.";
-				return $False;
-			}
-		} Else {
-			$IisBackPath = "$WinDir\System32\iisback.vbs";
-		}
+		$IisBackPath = CheckForIisBackVbs
+		If ($IisBackPath.Length -eq 0){Return $False}
 		
 		$BeforeBackups = .\list-backups-iis.ps1
 		
@@ -207,13 +215,14 @@ Function BackupIISConfig() {
 			#If backups are exactly the same, backups
 			#failed.
 			Write-Error "Backups seem to have failed!"
-			return $False
+			Return $False
 		} Else {
-			return $True
+			#Success
+			Return $True
 		}
 	} Else {
 		Write-Error "Something unexpected went wrong!";
-		return $False;
+		Return $False;
 	}
 }
 
@@ -228,21 +237,38 @@ Function RestoreIISConfig {
 	$WindowsVersion = CheckWindowsVersion
 	If ($WindowsVersion -eq "Incompatible") {
 		Write-Error "This version of Windows is incompatible.";
-		return $False;
+		Return $False;
 	} ElseIf (!(CheckIISIsInstalled)) {
 		Write-Error "IIS was not detected.";
-		return $False;
+		Return $False;
 	} ElseIf ($BackupName.Length -eq 0) {
 		Write-Error "Backup name is a required parameter."
-		return $False
-	} ElseIf (!($BackupList.Name -contains $BackupName)) {
+		Return $False
+	} ElseIf (($BackupList -Match $BackupName).Count -eq 0) {
 		Write-Error "Backup set does not contain the backup!"
-		#return $False
+		Return $False
 	}
 
-	Write-Output "ok"
-	Write-Output $BackupName
-	Write-Output $BackupList
+	If (Get-Command Backup-WebConfiguration -CommandType Cmdlet -errorAction SilentlyContinue) {
+	
+	} ElseIf ($WindowsVersion = "2003") {
+		$IisBackPath = CheckForIisBackVbs
+		If ($IisBackPath.Length -eq 0){Return $False}
+		
+		$Restore = "$WinDir\System32\cscript.exe $IisBackPath /restore /b $BackupName";
+		$RestoreResults = ((iex $Restore) | Out-String);
+		
+		If ($RestoreResults -like "*HIGHEST_VERSION has been RESTORED*") {
+			#Success
+			Return $True
+		} Else {
+			Write-Error "Restore failed: `n $RestoreResults"
+			Return $False
+		}
+	} Else {
+		Write-Error "Something unexpected went wrong!";
+		Return $False;
+	}
 }
 
-#RestoreIISConfig letsencrypt-20150428152305
+RestoreIISConfig letsencrypt20150428142348
