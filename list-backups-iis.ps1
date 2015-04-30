@@ -11,9 +11,7 @@
 #
 # ------------------------------------------------------------------------
 
-Function ListBackups(){
-	#Work in progress, going to return an array of backups
-	$objBackups = @()
+Function Get-BackupObject() {
 	$objBackup = New-Module -AsCustomObject -ScriptBlock {
     [string]$Name=$null
 	[System.Nullable``1[[System.DateTime]]]$Date=$null
@@ -22,22 +20,23 @@ Function ListBackups(){
     }
     Export-ModuleMember -Variable * -Function *}
 
+	Return $objBackup
+}
+
+Function ListBackups(){
+	$objBackups = @()
+
 	If (Get-Command Get-WebConfigurationBackup -CommandType Cmdlet -errorAction SilentlyContinue) {
 	#2008+ Backups
-		$BackupIndex = 0;
 		ForEach ($Backup In Get-WebConfigurationBackup) {
-			$BackupName = $Backup.Name;
-			$BackupDate = $Backup.CreationDate;
-			If ($BackupName -like "letsencrypt*"){
-				Write-Host "$BackupIndex.) $BackupName - $BackupDate" -foregroundcolor green;
-			} Else {
-				Write-Host "$BackupIndex.) $BackupName - $BackupDate";
-			}
-			$BackupIndex++;
+			$objBackup = Get-BackupObject
+			$objBackup.Name = $Backup.Name;
+			$objBackup.Date = [datetime]$Backup.CreationDate;
+			
+			$objBackups += $objBackup;
 		}
 		
-		Return $True;
-	
+		Return $objBackups;
 	} Else {
 	#2003 Backups
 		Try {
@@ -53,19 +52,20 @@ Function ListBackups(){
 				$BackupObj = $IISComputer.EnumBackups("",$BackupIndex);
 				$BackupLocation = $BackupObj.BackupLocation;
 				$BackupDate = $BackupObj.BackupDateTimeOut;
+
+				$objBackup = Get-BackupObject
+				$objBackup.Name = $BackupLocation;
+				$objBackup.Date = [datetime]$BackupDate;
+
+				$objBackups += $objBackup;
 				
-				If ($BackupLocation -like "letsencrypt*"){
-					Write-Host "$BackupIndex.) $BackupLocation - $BackupDate" -foregroundcolor green;
-				} Else {
-					Write-Host "$BackupIndex.) $BackupLocation - $BackupDate";
-				}
 				$BackupIndex++;
 			} Catch {
 				Exit;
 			}
 		}
 		
-		Return $True;
+		Return $objBackups;
 	}
 }
 
