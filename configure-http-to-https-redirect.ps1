@@ -9,7 +9,7 @@
 #           2003+ IIS
 #           
 #
-# TODO: Test with desktop versions of IIS
+# TODO: Everything.
 #
 # REF: http://www.jppinto.com/2009/01/automatically-redirect-http-requests-to-https-on-iis-6/
 #
