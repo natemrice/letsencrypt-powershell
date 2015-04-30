@@ -144,10 +144,11 @@ AAAAAQABAF0AAAA3FQAAAAA=
 $IisBack = [System.Convert]::FromBase64String($Base64);
 
 Function BackupIISConfig() {
-	#Sanity checks
-	$WindowsVersion = CheckWindowsVersion
 	$WinDir = $env:windir;
 	$TimeStamp = get-date -uFormat "%Y%m%d%H%M%S";
+	
+	#Sanity checks
+	$WindowsVersion = CheckWindowsVersion
 	If ($WindowsVersion -eq "Incompatible") {
 		Write-Error [string]"This version of Windows is incompatible.";
 		return $False;
@@ -195,8 +196,9 @@ Function BackupIISConfig() {
 		}
 		
 		$Backup = "$WinDir\System32\cscript.exe $IisBackPath /backup /b letsencrypt$TimeStamp";
-		Write-Host $Backup;
+		#Write-Host $Backup;
 		iex $Backup;
+		
 		
 		#TODO: Verify backups was successful.
 	} Else {
