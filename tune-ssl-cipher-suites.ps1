@@ -1,7 +1,7 @@
 # ------------------------------------------------------------------------
 # NAME: tune-ssl-cipher-suites.ps1
 # AUTHOR: Nathan Rice, naterice.com
-# DATE: 2015/04/28
+# DATE: 2015/04/30
 #
 # KEYWORDS: letsencrypt
 #
@@ -73,7 +73,7 @@ Function TuneSSLCiphers() {
 	  'DES 56/56','NULL','RC2 128/128','RC2 40/128','RC2 56/128','RC4 40/128','RC4 56/128','RC4 64/128','RC4 128/128'
 	)
 
-	Foreach ($insecureCipher in $insecureCiphers) {
+	ForEach ($insecureCipher In $insecureCiphers) {
 	  $key = (Get-Item HKLM:\).OpenSubKey('SYSTEM\CurrentControlSet\Control\SecurityProviders\SCHANNEL\Ciphers', $true).CreateSubKey($insecureCipher)
 	  $key.SetValue('Enabled', 0, 'DWord')
 	  $key.close()
@@ -82,7 +82,7 @@ Function TuneSSLCiphers() {
 	$secureCiphers = @(
 	  'AES 256/256','AES 128/128','Triple DES 168/168'
 	)
-	Foreach ($secureCipher in $secureCiphers) {
+	ForEach ($secureCipher In $secureCiphers) {
 	  $key = (Get-Item HKLM:\).OpenSubKey('SYSTEM\CurrentControlSet\Control\SecurityProviders\SCHANNEL\Ciphers', $true).CreateSubKey($secureCipher)
 	  New-ItemProperty -path "HKLM:\SYSTEM\CurrentControlSet\Control\SecurityProviders\SCHANNEL\Ciphers\$secureCipher" -name 'Enabled' -value '0xffffffff' -PropertyType 'DWord' -Force | Out-Null
 	  $key.close()

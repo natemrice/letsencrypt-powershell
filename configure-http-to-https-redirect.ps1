@@ -1,7 +1,7 @@
 # ------------------------------------------------------------------------
 # NAME: configure-http-to-https-redirect.ps1
 # AUTHOR: Nathan Rice, naterice.com
-# DATE: 2015/04/28
+# DATE: 2015/04/30
 #
 # KEYWORDS: letsencrypt
 #
