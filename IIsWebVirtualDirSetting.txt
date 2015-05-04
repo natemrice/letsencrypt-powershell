@@ -1,0 +1,175 @@
+IIsWebVirtualDirSetting Reference
+
+__GENUS                       : 2
+__CLASS                       : IIsWebVirtualDirSetting
+__SUPERCLASS                  : IIsSetting
+__DYNASTY                     : CIM_Setting
+__RELPATH                     : IIsWebVirtualDirSetting.Name="W3SVC/1/ROOT"
+__PROPERTY_COUNT              : 142
+__DERIVATION                  : {IIsSetting, CIM_Setting}
+__SERVER                      : SECURITY-01
+__NAMESPACE                   : root\MicrosoftIISv2
+__PATH                        : \\SECURITY-01\root\MicrosoftIISv2:IIsWebVirtual
+                                DirSetting.Name="W3SVC/1/ROOT"
+AccessExecute                 : False
+AccessFlags                   : 513
+AccessNoPhysicalDir           : False
+AccessNoRemoteExecute         : False
+AccessNoRemoteRead            : False
+AccessNoRemoteScript          : False
+AccessNoRemoteWrite           : False
+AccessRead                    : True
+AccessScript                  : True
+AccessSource                  : False
+AccessSSL                     : False
+AccessSSL128                  : False
+AccessSSLFlags                : 0
+AccessSSLMapCert              : False
+AccessSSLNegotiateCert        : False
+AccessSSLRequireCert          : False
+AccessWrite                   : False
+AdminACLBin                   : 
+AnonymousPasswordSync         : True
+AnonymousUserName             : IUSR_SECURITY-01
+AnonymousUserPass             : 7cR$#T/tQD1!\D
+AppAllowClientDebug           : False
+AppAllowDebugging             : False
+AppFriendlyName               : Default Application
+AppOopRecoverLimit            : -1
+AppPoolId                     : DefaultAppPool
+AppWamClsid                   : 
+AspAllowOutOfProcComponents   : True
+AspAllowSessionState          : True
+AspAppServiceFlags            : 0
+AspBufferingLimit             : 4194304
+AspBufferingOn                : True
+AspCalcLineNumber             : True
+AspCodepage                   : 0
+AspDiskTemplateCacheDirectory : %windir%\system32\inetsrv\ASP Compiled Template
+                                s
+AspEnableApplicationRestart   : True
+AspEnableAspHtmlFallback      : False
+AspEnableChunkedEncoding      : True
+AspEnableParentPaths          : False
+AspEnableSxs                  : False
+AspEnableTracker              : False
+AspEnableTypelibCache         : True
+AspErrorsToNTLog              : False
+AspExceptionCatchEnable       : True
+AspExecuteInMTA               : 0
+AspKeepSessionIDSecure        : 0
+AspLCID                       : 2048
+AspLogErrorRequests           : True
+AspMaxDiskTemplateCacheFiles  : 2000
+AspMaxRequestEntityAllowed    : 204800
+AspPartitionID                : 
+AspProcessorThreadMax         : 25
+AspQueueConnectionTestTime    : 3
+AspQueueTimeout               : -1
+AspRequestQueueMax            : 3000
+AspRunOnEndAnonymously        : True
+AspScriptEngineCacheMax       : 250
+AspScriptErrorMessage         : An error occurred on the server when processing
+                                 the URL.  Please contact the system administra
+                                tor.
+AspScriptErrorSentToBrowser   : True
+AspScriptFileCacheSize        : 500
+AspScriptLanguage             : VBScript
+AspScriptTimeout              : 90
+AspSessionMax                 : -1
+AspSessionTimeout             : 20
+AspSxsName                    : 
+AspTrackThreadingModel        : False
+AspUsePartition               : False
+AuthAdvNotifyDisable          : True
+AuthAnonymous                 : True
+AuthBasic                     : False
+AuthChangeDisable             : True
+AuthChangeUnsecure            : False
+AuthChangeURL                 : /iisadmpwd/achg.asp
+AuthExpiredUnsecureURL        : /iisadmpwd/aexp3.asp
+AuthExpiredURL                : /iisadmpwd/aexp.asp
+AuthFlags                     : 1
+AuthMD5                       : False
+AuthNotifyPwdExpUnsecureURL   : /iisadmpwd/anot3.asp
+AuthNotifyPwdExpURL           : /iisadmpwd/anot.asp
+AuthNTLM                      : False
+AuthPassport                  : False
+AuthPersistence               : 64
+AuthPersistSingleRequest      : True
+AzEnable                      : False
+AzImpersonationLevel          : 0
+AzScopeName                   : 
+AzStoreName                   : 
+CacheControlCustom            : 
+CacheControlMaxAge            : 0
+CacheControlNoCache           : False
+CacheISAPI                    : True
+Caption                       : 
+CGITimeout                    : 300
+ContentIndexed                : True
+CreateCGIWithNewConsole       : False
+CreateProcessAsUser           : True
+DefaultDoc                    : Default.htm,Default.asp,index.htm,iisstart.htm
+DefaultDocFooter              : 
+DefaultLogonDomain            : 
+Description                   : 
+DirBrowseFlags                : 1073741886
+DirBrowseShowDate             : True
+DirBrowseShowExtension        : True
+DirBrowseShowLongDate         : True
+DirBrowseShowSize             : True
+DirBrowseShowTime             : True
+DisableStaticFileCache        : False
+DoDynamicCompression          : False
+DontLog                       : False
+DoStaticCompression           : False
+EnableDefaultDoc              : True
+EnableDirBrowsing             : False
+EnableDocFooter               : False
+EnableReverseDns              : False
+FrontPageWeb                  : False
+HttpCustomHeaders             : {}
+HttpErrors                    : {System.Management.ManagementBaseObject, System
+                                .Management.ManagementBaseObject, System.Manage
+                                ment.ManagementBaseObject, System.Management.Ma
+                                nagementBaseObject...}
+HttpExpires                   : D, 0x15180
+HttpPics                      : {}
+HttpRedirect                  : 
+LogonMethod                   : 3
+MaxRequestEntityAllowed       : -1
+MimeMap                       : {System.Management.ManagementBaseObject}
+Name                          : W3SVC/1/ROOT
+NTAuthenticationProviders     : 
+PassportRequireADMapping      : 1
+PasswordChangeFlags           : 6
+PasswordExpirePrenotifyDays   : 0
+Path                          : c:\inetpub\wwwroot
+PoolIdcTimeout                : 0
+Realm                         : 
+RedirectHeaders               : {}
+ScriptMaps                    : {System.Management.ManagementBaseObject, System
+                                .Management.ManagementBaseObject, System.Manage
+                                ment.ManagementBaseObject, System.Management.Ma
+                                nagementBaseObject...}
+SettingID                     : 
+ShutdownTimeLimit             : 90
+SSIExecDisable                : False
+UNCPassword                   : 
+UNCUserName                   : 
+UploadReadAheadSize           : 49152
+UseDigestSSP                  : False
+WebDAVMaxAttributesPerElement : 32
+Win32Error                    : 0
+Scope                         : System.Management.ManagementScope
+Options                       : System.Management.ObjectGetOptions
+ClassPath                     : \\SECURITY-01\root\MicrosoftIISv2:IIsWebVirtual
+                                DirSetting
+Properties                    : {AccessExecute, AccessFlags, AccessNoPhysicalDi
+                                r, AccessNoRemoteExecute...}
+SystemProperties              : {__GENUS, __CLASS, __SUPERCLASS, __DYNASTY...}
+Qualifiers                    : {dynamic, InstanceExists, InstanceName, Locale.
+                                ..}
+Site                          : 
+Container                     : 

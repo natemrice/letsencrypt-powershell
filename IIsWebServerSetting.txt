@@ -1,0 +1,218 @@
+IIsWebServerSetting Reference
+
+__GENUS                        : 2
+__CLASS                        : IIsWebServerSetting
+__SUPERCLASS                   : IIsSetting
+__DYNASTY                      : CIM_Setting
+__RELPATH                      : IIsWebServerSetting.Name="W3SVC/87257621"
+__PROPERTY_COUNT               : 196
+__DERIVATION                   : {IIsSetting, CIM_Setting}
+__SERVER                       : SECURITY-01
+__NAMESPACE                    : root\MicrosoftIISv2
+__PATH                         : \\SECURITY-01\root\MicrosoftIISv2:IIsWebServer
+                                 Setting.Name="W3SVC/87257621"
+AccessExecute                  : False
+AccessFlags                    : 1
+AccessNoPhysicalDir            : False
+AccessNoRemoteExecute          : False
+AccessNoRemoteRead             : False
+AccessNoRemoteScript           : False
+AccessNoRemoteWrite            : False
+AccessRead                     : True
+AccessScript                   : False
+AccessSource                   : False
+AccessSSL                      : False
+AccessSSL128                   : False
+AccessSSLFlags                 : 0
+AccessSSLMapCert               : False
+AccessSSLNegotiateCert         : False
+AccessSSLRequireCert           : False
+AccessWrite                    : False
+AdminACLBin                    :
+AllowKeepAlive                 : True
+AllowPathInfoForScriptMappings : False
+AnonymousPasswordSync          : True
+AnonymousUserName              : IUSR_SECURITY-01
+AnonymousUserPass              : 7cR$#T/tQD1!\D
+AppAllowClientDebug            : False
+AppAllowDebugging              : False
+AppFriendlyName                :
+AppOopRecoverLimit             : -1
+AppPoolId                      : DefaultAppPool
+AppWamClsid                    :
+AspAllowOutOfProcComponents    : True
+AspAllowSessionState           : True
+AspAppServiceFlags             : 0
+AspBufferingLimit              : 4194304
+AspBufferingOn                 : True
+AspCalcLineNumber              : True
+AspCodepage                    : 0
+AspDiskTemplateCacheDirectory  : %windir%\system32\inetsrv\ASP Compiled Templat
+                                 es
+AspEnableApplicationRestart    : True
+AspEnableAspHtmlFallback       : False
+AspEnableChunkedEncoding       : True
+AspEnableParentPaths           : False
+AspEnableSxs                   : False
+AspEnableTracker               : False
+AspEnableTypelibCache          : True
+AspErrorsToNTLog               : False
+AspExceptionCatchEnable        : True
+AspExecuteInMTA                : 0
+AspKeepSessionIDSecure         : 0
+AspLCID                        : 2048
+AspLogErrorRequests            : True
+AspMaxDiskTemplateCacheFiles   : 2000
+AspMaxRequestEntityAllowed     : 204800
+AspPartitionID                 :
+AspProcessorThreadMax          : 25
+AspQueueConnectionTestTime     : 3
+AspQueueTimeout                : -1
+AspRequestQueueMax             : 3000
+AspRunOnEndAnonymously         : True
+AspScriptEngineCacheMax        : 250
+AspScriptErrorMessage          : An error occurred on the server when processin
+                                 g the URL.  Please contact the system administ
+                                 rator.
+AspScriptErrorSentToBrowser    : True
+AspScriptFileCacheSize         : 500
+AspScriptLanguage              : VBScript
+AspScriptTimeout               : 90
+AspSessionMax                  : -1
+AspSessionTimeout              : 20
+AspSxsName                     :
+AspTrackThreadingModel         : False
+AspUsePartition                : False
+AuthAdvNotifyDisable           : True
+AuthAnonymous                  : False
+AuthBasic                      : False
+AuthChangeDisable              : True
+AuthChangeUnsecure             : False
+AuthFlags                      : 0
+AuthMD5                        : False
+AuthNTLM                       : False
+AuthPassport                   : False
+AuthPersistence                : 64
+AuthPersistSingleRequest       : True
+AzEnable                       : False
+AzImpersonationLevel           : 0
+AzScopeName                    :
+AzStoreName                    :
+CacheControlCustom             :
+CacheControlMaxAge             : 0
+CacheControlNoCache            : False
+CacheISAPI                     : True
+Caption                        :
+CertCheckMode                  : 0
+CGITimeout                     : 300
+ClusterEnabled                 : False
+ConnectionTimeout              : 120
+ContentIndexed                 : True
+CreateCGIWithNewConsole        : False
+CreateProcessAsUser            : True
+DefaultDoc                     : Default.htm,Default.asp,index.htm
+DefaultDocFooter               :
+DefaultLogonDomain             :
+Description                    :
+DirBrowseFlags                 : 1073741886
+DirBrowseShowDate              : True
+DirBrowseShowExtension         : True
+DirBrowseShowLongDate          : True
+DirBrowseShowSize              : True
+DirBrowseShowTime              : True
+DisableSocketPooling           : True
+DisableStaticFileCache         : False
+DoDynamicCompression           : False
+DontLog                        : False
+DoStaticCompression            : False
+EnableDefaultDoc               : True
+EnableDirBrowsing              : False
+EnableDocFooter                : False
+EnableReverseDns               : False
+FrontPageWeb                   : False
+HttpCustomHeaders              : {}
+HttpErrors                     : {System.Management.ManagementBaseObject, Syste
+                                 m.Management.ManagementBaseObject, System.Mana
+                                 gement.ManagementBaseObject, System.Management
+                                 .ManagementBaseObject...}
+HttpExpires                    : D, 0x15180
+HttpPics                       : {}
+LogExtFileBytesRecv            : False
+LogExtFileBytesSent            : False
+LogExtFileClientIp             : True
+LogExtFileComputerName         : False
+LogExtFileCookie               : False
+LogExtFileDate                 : True
+LogExtFileFlags                : 2199519
+LogExtFileHost                 : False
+LogExtFileHttpStatus           : True
+LogExtFileHttpSubStatus        : True
+LogExtFileMethod               : True
+LogExtFileProtocolVersion      : False
+LogExtFileReferer              : False
+LogExtFileServerIp             : True
+LogExtFileServerPort           : True
+LogExtFileSiteName             : True
+LogExtFileTime                 : True
+LogExtFileTimeTaken            : False
+LogExtFileUriQuery             : True
+LogExtFileUriStem              : True
+LogExtFileUserAgent            : True
+LogExtFileUserName             : True
+LogExtFileWin32Status          : True
+LogFileDirectory               : C:\WINDOWS\system32\LogFiles
+LogFileLocaltimeRollover       : False
+LogFilePeriod                  : 1
+LogFileTruncateSize            : 20971520
+LogOdbcDataSource              : HTTPLOG
+LogOdbcPassword                : sqllog
+LogOdbcTableName               : InternetLog
+LogOdbcUserName                : InternetAdmin
+LogonMethod                    : 3
+LogPluginClsid                 : {FF160663-DE82-11CF-BC0A-00AA006111E0}
+LogType                        : 1
+MaxBandwidth                   : -1
+MaxBandwidthBlocked            : -1
+MaxConnections                 : -1
+MaxEndpointConnections         : -1
+MaxRequestEntityAllowed        : -1
+MimeMap                        : {System.Management.ManagementBaseObject}
+Name                           : W3SVC/87257621
+NTAuthenticationProviders      :
+PassportRequireADMapping       : 1
+PasswordCacheTTL               : 600
+PasswordChangeFlags            : 6
+PasswordExpirePrenotifyDays    : 0
+PoolIdcTimeout                 : 0
+ProcessNTCRIfLoggedOn          : True
+Realm                          :
+RedirectHeaders                : {}
+RevocationFreshnessTime        : 86400
+RevocationURLRetrievalTimeout  : 0
+ScriptMaps                     : {System.Management.ManagementBaseObject, Syste
+                                 m.Management.ManagementBaseObject, System.Mana
+                                 gement.ManagementBaseObject, System.Management
+                                 .ManagementBaseObject...}
+SecureBindings                 : {System.Management.ManagementBaseObject}
+ServerAutoStart                : True
+ServerBindings                 : {www.test.com}
+ServerCommand                  : 1
+ServerComment                  : test
+ServerID                       :
+ServerListenBacklog            : 40
+ServerListenTimeout            : 120
+ServerSize                     : 1
+SetHostName                    :
+SettingID                      :
+ShutdownTimeLimit              : 90
+SSIExecDisable                 : False
+SSLAlwaysNegoClientCert        : False
+SslCtlIdentifier               :
+SslCtlStoreName                :
+SSLStoreName                   :
+TraceUriPrefix                 : {}
+UploadReadAheadSize            : 49152
+UseDigestSSP                   : False
+UseHostName                    :
+WebDAVMaxAttributesPerElement  : 32
+Win32Error                     : 0

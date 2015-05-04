@@ -15,9 +15,25 @@
 #
 # ------------------------------------------------------------------------
 
-#IIS 6
-$IISWMI = get-wmiobject -namespace "root/MicrosoftIISv2" -class IIsWebVirtualDirSetting
+#IIS 6 -- This doesn't seem to return the info I need, maybe relevant later
+#$IISWMI = get-wmiobject -namespace "root/MicrosoftIISv2" -class IIsWebVirtualDirSetting
+#$IISWMI | ft Name,Path,AppFriendlyName
 
-$IISWMI | ft Name,Path,AppFriendlyName
+#This does seem to return SSL Bindings but I haven't figured out the
+#logic behind the bindings that seems appropriate
+$IISWMI = get-wmiobject -namespace "root/MicrosoftIISv2" -Class IISWebServerSetting
+$IISWMI | ft ServerComment,
 
-"<script>window.location = ""https:"" + window.location.href.substring(window.location.protocol.length)</script>"
+ForEach ($Site in $IISWMI) {
+	$SSLBinding = @(); 
+    foreach ($tmpSecureBinding in $_.SecureBindings) {
+        $SSLBinding += $tmpSecureBinding.Port 
+    };
+	$SSLBinding; 
+}
+
+#Since there is no native way to redirect in IIS 6, I was thinking I could URL redirect
+#HTTP requests to HTTPS based on the 403 error page that gets returned, via JavaScript.
+#this method is obviously going to fail on browsers that do not have JavaScript enabled,
+#maybe someone else can think of a better way.
+#"<script>window.location = ""https:"" + window.location.href.substring(window.location.protocol.length)</script>"
