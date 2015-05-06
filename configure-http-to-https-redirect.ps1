@@ -9,7 +9,10 @@
 #           2003+ IIS
 #           
 #
-# TODO: Everything.
+# TODO: Return 2008+ sites and SSL Binding status.
+#       Return a list of IP's assigned to the machine.
+#       Detect of SNI is installed.
+#       Support IPv6?
 #
 # REF: http://www.jppinto.com/2009/01/automatically-redirect-http-requests-to-https-on-iis-6/
 #
@@ -19,18 +22,32 @@
 #$IISWMI = get-wmiobject -namespace "root/MicrosoftIISv2" -class IIsWebVirtualDirSetting
 #$IISWMI | ft Name,Path,AppFriendlyName
 
-#This does seem to return SSL Bindings but I haven't figured out the
-#logic behind the bindings that seems appropriate
-$IISWMI = get-wmiobject -namespace "root/MicrosoftIISv2" -Class IISWebServerSetting
-$IISWMI | ft ServerComment,
+Function GetIIS6Websites () {
+	$IISWMI = get-wmiobject -namespace "root/MicrosoftIISv2" -Class IISWebServerSetting
+	$Sites = @()
+	ForEach ($Site in $IISWMI) {
+		#$Site
 
-ForEach ($Site in $IISWMI) {
-	$SSLBinding = @(); 
-    foreach ($tmpSecureBinding in $_.SecureBindings) {
-        $SSLBinding += $tmpSecureBinding.Port 
-    };
-	$SSLBinding; 
+		$SSLBinding = @();
+		$SSLEnabled = $False
+		ForEach ($tmpSecureBinding in $Site.SecureBindings) {
+			#$tmpSecureBinding | fl
+			$IP = $tmpSecureBinding.IP
+			$Port = $tmpSecureBinding.Port -replace ":", ""
+			$SSLBinding += "$IP : $Port"
+			If ($Port -gt 0) {
+				$SSLEnabled = $True
+			}
+		};
+		
+		$SiteID = $Site.Name
+		$SiteFriendlyName = $Site.ServerComment
+		$Sites += "$SiteID, $SiteFriendlyName, $SSLBinding, $SSLEnabled"
+	}
+	
+	Return $Sites
 }
+
 
 #Since there is no native way to redirect in IIS 6, I was thinking I could URL redirect
 #HTTP requests to HTTPS based on the 403 error page that gets returned, via JavaScript.

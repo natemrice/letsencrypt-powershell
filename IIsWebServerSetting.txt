@@ -1,4 +1,4 @@
-IIsWebServerSetting Reference
+>>> IIsWebServerSetting Reference
 
 __GENUS                        : 2
 __CLASS                        : IIsWebServerSetting
@@ -216,3 +216,22 @@ UseDigestSSP                   : False
 UseHostName                    :
 WebDAVMaxAttributesPerElement  : 32
 Win32Error                     : 0
+
+
+
+
+>>> SecureBinding Reference
+
+__GENUS          : 2
+__CLASS          : SecureBinding
+__SUPERCLASS     : IIsStructuredDataClass
+__DYNASTY        : IIsStructuredDataClass
+__RELPATH        : SecureBinding.IP="",Port="443:"
+__PROPERTY_COUNT : 2
+__DERIVATION     : {IIsStructuredDataClass}
+__SERVER         :
+__NAMESPACE      :
+__PATH           :
+IP               :
+Port             : 443:
+
