@@ -235,3 +235,33 @@ __PATH           :
 IP               :
 Port             : 443:
 
+
+>>> Bindings Reference
+
+__GENUS          : 2
+__CLASS          : ServerBinding
+__SUPERCLASS     : IIsStructuredDataClass
+__DYNASTY        : IIsStructuredDataClass
+__RELPATH        : ServerBinding.Hostname="www.test.com",IP="",Port="80"
+__PROPERTY_COUNT : 3
+__DERIVATION     : {IIsStructuredDataClass}
+__SERVER         :
+__NAMESPACE      :
+__PATH           :
+Hostname         : www.test.com
+IP               :
+Port             : 80
+
+__GENUS          : 2
+__CLASS          : ServerBinding
+__SUPERCLASS     : IIsStructuredDataClass
+__DYNASTY        : IIsStructuredDataClass
+__RELPATH        : ServerBinding.Hostname="www.naterice.com",IP="",Port="555"
+__PROPERTY_COUNT : 3
+__DERIVATION     : {IIsStructuredDataClass}
+__SERVER         :
+__NAMESPACE      :
+__PATH           :
+Hostname         : www.naterice.com
+IP               :
+Port             : 555
