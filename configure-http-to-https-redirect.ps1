@@ -13,10 +13,25 @@
 #       Return a list of IP's assigned to the machine.
 #       Detect if SNI is installed.
 #       Support IPv6?
+#		Error handling
 #
 # REF: http://www.jppinto.com/2009/01/automatically-redirect-http-requests-to-https-on-iis-6/
 #
 # ------------------------------------------------------------------------
+
+#ServerState codes
+Function Get-State($State){
+	Switch($State){
+		1 {Return "Starting"}
+		2 {Return "Started"}
+		3 {Return "Stopping"}
+		4 {Return "Stopped"}
+		5 {Return "Pausing"}
+		6 {Return "Paused"}
+		7 {Return "Continuing"}
+		default {"Error"}
+	}
+}
 
 Function Get-WebsiteObject() {
 	#trying to mirror the 2008 object properties
@@ -47,7 +62,8 @@ Function Get-BindingObject() {
 
 Function GetIIS6Websites() {
 	$IISWMIServerSetting = get-wmiobject -namespace "root/MicrosoftIISv2" -Class IISWebServerSetting
-	$IISWMIVirtualDirSetting = get-wmiobject -namespace "root/MicrosoftIISv2" -class IIsWebVirtualDirSetting
+	$IISWMIVirtualDirSetting = get-wmiobject -namespace "root/MicrosoftIISv2" -Class IIsWebVirtualDirSetting
+	$IISWMIWebServer = get-wmiobject -namespace "root/MicrosoftIISv2" -Class IIsWebServer
 	
 	$Sites = @()
 	ForEach ($Site In $IISWMIServerSetting) {
@@ -87,7 +103,7 @@ Function GetIIS6Websites() {
 		$SiteObj.Name = $Site.ServerComment
 		$SiteObj.Bindings = $Bindings
 		$SiteObj.PhysicalPath = ($IISWMIVirtualDirSetting | Where-Object {$_.Name -like "W3SVC/" + $SiteObj.ID + "/root"}).Path
-		
+		$SiteObj.State = Get-State ($IISWMIWebServer | Where-Object {$_.Name -like "W3SVC/" + $SiteObj.ID}).ServerState
 		
 		$Sites += $SiteObj
 	}
