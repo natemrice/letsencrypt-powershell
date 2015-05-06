@@ -18,10 +18,6 @@
 #
 # ------------------------------------------------------------------------
 
-#IIS 6 -- This doesn't seem to return the info I need, maybe relevant later
-#$IISWMI = get-wmiobject -namespace "root/MicrosoftIISv2" -class IIsWebVirtualDirSetting
-#$IISWMI | ft Name,Path,AppFriendlyName
-
 Function Get-WebsiteObject() {
 	#trying to mirror the 2008 object properties
 	$objWebsite = New-Module -AsCustomObject -ScriptBlock {
@@ -29,11 +25,24 @@ Function Get-WebsiteObject() {
 	[int]$ID=$null
 	[string]$State=$null
 	[string]$PhysicalPath=$null
-	[string]$Bindings=$null
+	[object]$Bindings=$null
 
     Export-ModuleMember -Variable * -Function *}
 
 	Return $objWebsite
+}
+
+Function Get-BindingObject() {
+	#Returns a binding object
+	$objBinding = New-Module -AsCustomObject -ScriptBlock {
+    [string]$Name=$null
+	[string]$IP=$null
+	[int]$Port=$null
+	[string]$Type=$null
+
+    Export-ModuleMember -Variable * -Function *}
+
+	Return $objBinding
 }
 
 Function GetIIS6Websites() {
@@ -41,19 +50,42 @@ Function GetIIS6Websites() {
 	$IISWMIVirtualDirSetting = get-wmiobject -namespace "root/MicrosoftIISv2" -class IIsWebVirtualDirSetting
 	
 	$Sites = @()
-	ForEach ($Site in $IISWMIServerSetting) {
+	ForEach ($Site In $IISWMIServerSetting) {
 		$SiteObj = Get-WebsiteObject
 
-		$SSLBinding = @();
-		ForEach ($tmpSecureBinding in $Site.SecureBindings) {
-			$IP = $tmpSecureBinding.IP
-			$Port = $tmpSecureBinding.Port -replace ":", ""
-			$SSLBinding += "$IP`:$Port"
+		$Bindings = @();
+		
+		#Secure Bindings
+		ForEach ($SecureBinding In $Site.SecureBindings) {
+			If ($SecureBinding.Port.Length -gt 0) {
+				$NewBinding = Get-BindingObject
+			
+				$NewBinding.IP = $SecureBinding.IP
+				$NewBinding.Port = $SecureBinding.Port -replace ":", ""
+				$NewBinding.Type = "https"
+				
+				$Bindings += $NewBinding
+			}
 		};
+		
+		#Normal Bindings
+		ForEach ($Binding In $Site.ServerBindings) {
+			If ($SecureBinding.Port.Length -gt 0) {
+				$NewBinding = Get-BindingObject
+			
+				$NewBinding.Name = $Binding.Hostname
+				$NewBinding.IP = $Binding.IP
+				$NewBinding.Port = $Binding.Port
+				$NewBinding.Type = "http"
+				
+				$Bindings += $NewBinding
+			}
+		};
+		
 		
 		$SiteObj.ID = $Site.Name -replace "W3SVC/", ""
 		$SiteObj.Name = $Site.ServerComment
-		$SiteObj.Bindings = $SSLBinding
+		$SiteObj.Bindings = $Bindings
 		$SiteObj.PhysicalPath = ($IISWMIVirtualDirSetting | Where-Object {$_.Name -like "W3SVC/" + $SiteObj.ID + "/root"}).Path
 		
 		
@@ -62,8 +94,6 @@ Function GetIIS6Websites() {
 	
 	Return $Sites
 }
-
-
 
 
 #Since there is no native way to redirect in IIS 6, I was thinking I could URL redirect
