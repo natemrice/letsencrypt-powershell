@@ -13,11 +13,13 @@
 #       Return a list of IP's assigned to the machine.
 #       Detect if SNI is installed.
 #       Support IPv6?
-#		Error handling
+#       Error handling
 #
 # REF: http://www.jppinto.com/2009/01/automatically-redirect-http-requests-to-https-on-iis-6/
 #
 # ------------------------------------------------------------------------
+
+# HttpErrors 403.4 C:\Inetpub\wwwtest\403-4.htm
 
 #ServerState codes
 Function Get-State($State){
@@ -70,7 +72,7 @@ Function GetIIS6Websites() {
 		$SiteObj = Get-WebsiteObject
 
 		$Bindings = @();
-		
+	
 		#Secure Bindings
 		ForEach ($SecureBinding In $Site.SecureBindings) {
 			If ($SecureBinding.Port.Length -gt 0) {
@@ -111,9 +113,34 @@ Function GetIIS6Websites() {
 	Return $Sites
 }
 
+Function GetActiveIPs(){
+	#We need a list of IP's assigned to this machine so we
+	#know if they are available to bind SSL to.
+	$ActiveIPs = @()
+	$Nics = (get-WmiObject Win32_NetworkAdapterConfiguration) | Where-Object {$_.IPAddress.Length -gt 0}
+	ForEach ($ActiveNic In $Nics) {
+		ForEach ($IP In $ActiveNic.IPAddress) {
+			$ActiveIPs += $IP
+		}
+	}
+	
+	Return $ActiveIPs
+}
 
-#Since there is no native way to redirect in IIS 6, I was thinking I could URL redirect
-#HTTP requests to HTTPS based on the 403 error page that gets returned, via JavaScript.
-#this method is obviously going to fail on browsers that do not have JavaScript enabled,
-#maybe someone else can think of a better way.
-#"<script>window.location = ""https:"" + window.location.href.substring(window.location.protocol.length)</script>"
+Function SetRequireSSL($SiteID) {
+	Set-WMIInstance -Path "\\localhost\root\MicrosoftIISv2:IIsWebVirtualDirSetting='W3SVC`/$SiteID`/root'" -argument @{AccessSSLFlags="264"} | Out-Null
+}
+
+Function ConfigureSSLRedirect($SiteID) {
+	#ToDo
+
+	#Since there is no native way to redirect in IIS 6, I was thinking I could URL redirect
+	#HTTP requests to HTTPS based on the 403 error page that gets returned, via JavaScript.
+	#this method is obviously going to fail on browsers that do not have JavaScript enabled,
+	#maybe someone else can think of a better way.
+	#"<script>window.location = ""https:"" + window.location.href.substring(window.location.protocol.length)</script>"
+}
+
+#SetRequireSSL 87257621
+
+
