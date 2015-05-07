@@ -38,13 +38,13 @@ Function Get-State($State){
 Function Get-WebsiteObject() {
 	#trying to mirror the 2008 object properties
 	$objWebsite = New-Module -AsCustomObject -ScriptBlock {
-    [string]$Name=$null
+	[string]$Name=$null
 	[int]$ID=$null
 	[string]$State=$null
 	[string]$PhysicalPath=$null
 	[object]$Bindings=$null
 
-    Export-ModuleMember -Variable * -Function *}
+	Export-ModuleMember -Variable * -Function *}
 
 	Return $objWebsite
 }
@@ -52,12 +52,12 @@ Function Get-WebsiteObject() {
 Function Get-BindingObject() {
 	#Returns a binding object
 	$objBinding = New-Module -AsCustomObject -ScriptBlock {
-    [string]$Name=$null
+	[string]$Name=$null
 	[string]$IP=$null
 	[int]$Port=$null
 	[string]$Type=$null
 
-    Export-ModuleMember -Variable * -Function *}
+	Export-ModuleMember -Variable * -Function *}
 
 	Return $objBinding
 }
