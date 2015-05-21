@@ -14,14 +14,14 @@
 
 
 Function CheckWindowsVersion() {
-	#Backup methods changed from Windows 2003 to Windows 2008+
-	#So using this to detect which version is in use.
+	# Backup methods changed from Windows 2003 to Windows 2008+
+	# So using this to detect which version is in use.
 	$OS = [Environment]::OSVersion
 	If ($OS.Version.Major -ge 6) {
-		#2008+ share backup methods
+		# 2008+ share backup methods
 		Return "2008";
 	} ElseIf ($OS.Version.Major -eq 5 -and $OS.Version.Minor -ge 1) {
-		#XP and 2003 share backup methods
+		# XP and 2003 share backup methods
 		Return "2003";
 	} Else {
 		Return "Incompatible";
@@ -29,8 +29,8 @@ Function CheckWindowsVersion() {
 }
 
 Function CheckIISIsInstalled() {
-	#Simple check to see if IIS is installed. Piping to >$null
-	#to suppress output and it's PS 2.0+ compatible.
+	# Simple check to see if IIS is installed. Piping to >$null
+	# to suppress output and it's PS 2.0+ compatible.
 	Try {
 		Get-Service W3SVC -ErrorAction Stop >$null 2>&1;
 		Return $True;
@@ -40,7 +40,25 @@ Function CheckIISIsInstalled() {
 	}
 }
 
-##IisBack.zip
+Function CheckWebScriptingTools(){
+	# If this is Windows 2008+ and IIS is installed, we need
+	# scripting tools to manipulate it.
+	# ToDo: add error handling to the install portion and
+	# halt the script on failure.
+	
+	If (CheckWindowsVersion = "2008") {
+		Import-Module servermanager;
+		If (CheckIISIsInstalled) {
+			If ((Get-WindowsFeature Web-Scripting-Tools).Installed) {
+				Return $True;
+			} Else {
+				Add-WindowsFeature Web-Scripting-Tools
+			}
+		}
+	}
+}
+
+# IisBack.zip
 $Base64 = @"
 UEsDBBQAAAAIAAA4UjYoWXcrDhUAAAKJAAALAAAAaWlzYmFjay52YnPsXG1v6zQU/jwk/oNVBGzS
 6NZdXsu40Nt1dxVbO9rtAoKpchuvDTdNQpxs67/nnNiu7Tp1WzYhhMgH7pL4POf4vNtx+fTDDz4l
@@ -148,10 +166,10 @@ Function CheckForIisBackVbs() {
 	If (Test-Path "$WinDir\System32\iisback.vbs") {
 		Return "$WinDir\System32\iisback.vbs";
 	} ElseIf (Test-Path ((Get-Location).Path + "\iisback.vbs")) {
-		#Current running directory
+		# Current running directory
 		Return (Get-Location).Path + "\iisback.vbs";
 	} Else {
-		#If iisback.vbs doesn't exist, create it.
+		# If iisback.vbs doesn't exist, create it.
 		Try {
 			Set-Content -Path "iisback.zip" -Value $IisBack -Encoding Byte;
 			$Shell = New-Object -Com Shell.Application;
@@ -170,7 +188,7 @@ Function BackupIISConfig() {
 	$WinDir = $env:windir;
 	$TimeStamp = get-date -uFormat "%Y%m%d%H%M%S";
 	
-	#Sanity checks
+	# Sanity checks
 	$WindowsVersion = CheckWindowsVersion
 	If ($WindowsVersion -eq "Incompatible") {
 		Write-Error "This version of Windows is incompatible.";
@@ -179,9 +197,10 @@ Function BackupIISConfig() {
 		Write-Error "IIS was not detected.";
 		Return $False;
 	}
+	CheckWebScriptingTools
 
-	#If the Backup-WebConfiguration command exists we'll use that
-	#as it's the preferred way.
+	# If the Backup-WebConfiguration command exists we'll use that
+	# as it's the preferred way.
 	If (Get-Command Backup-WebConfiguration -CommandType Cmdlet -errorAction SilentlyContinue) {
 		Try {
 			Backup-WebConfiguration -Name "letsencrypt-$TimeStamp" -ErrorAction Stop;
