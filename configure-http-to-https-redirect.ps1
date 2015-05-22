@@ -8,9 +8,8 @@
 # COMMENTS: This file will force http to https redirection for Windows
 #           2003+ IIS
 #           
-#
-# TODO: Return 2008+ sites and SSL Binding status.
-#       Return a list of IP's assigned to the machine.
+#  
+# TODO: Configure HttpError property per site
 #       Detect if SNI is installed.
 #       Support IPv6?
 #       Error handling
@@ -58,7 +57,7 @@ Function CheckWebScriptingTools(){
 			If ((Get-WindowsFeature Web-Scripting-Tools).Installed) {
 				Return $True;
 			} Else {
-				Add-WindowsFeature Web-Scripting-Tools
+				Add-WindowsFeature Web-Scripting-Tools;
 			}
 		}
 	}

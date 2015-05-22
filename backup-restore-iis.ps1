@@ -52,7 +52,7 @@ Function CheckWebScriptingTools(){
 			If ((Get-WindowsFeature Web-Scripting-Tools).Installed) {
 				Return $True;
 			} Else {
-				Add-WindowsFeature Web-Scripting-Tools
+				Add-WindowsFeature Web-Scripting-Tools;
 			}
 		}
 	}
