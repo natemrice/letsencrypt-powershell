@@ -51,7 +51,7 @@ Function CheckWebScriptingTools(){
 	# If this is Windows 2008+ and IIS is installed, we need
 	# scripting tools to manipulate it.
 	
-	If (CheckWindowsVersion = "2008") {
+	If (CheckWindowsVersion -eq "2008") {
 		Import-Module servermanager;
 		If (CheckIISIsInstalled) {
 			If ((Get-WindowsFeature Web-Scripting-Tools).Installed) {
@@ -182,7 +182,7 @@ Function GetActiveIPs(){
 }
 
 Function SetRequireSSL($SiteID) {
-	Set-WMIInstance -Path "\\localhost\root\MicrosoftIISv2:IIsWebVirtualDirSetting='W3SVC`/$SiteID`/root'" -argument @{AccessSSLFlags="264"} | Out-Null;
+	Set-WMIInstance -Path "\\localhost\root\MicrosoftIISv2:IIsWebVirtualDirSetting='W3SVC/$SiteID/root'" -argument @{AccessSSLFlags="264"} | Out-Null;
 }
 
 Function ConfigureSSLRedirect($SiteID) {
@@ -215,12 +215,12 @@ Function ConfigureSSLRedirect($SiteID) {
 	
 	ForEach ($WebSite In $WebSites) {
 		If ($WebSite.ID -eq $SiteID) {
-			If (!(Test-Path "$WebSite.PhysicalPath`\$4034Page")) {
+			If (!(Test-Path "$($WebSite.PhysicalPath)\$4034Page")) {
 				# If the redirect page doesn't exist, create it.
 				Try {
-					$RedirectPage | Out-File "$WebSite.PhysicalPath`\$4034Page";
+					$RedirectPage | Out-File "$($WebSite.PhysicalPath)\$4034Page";
 				} Catch {
-					Write-Error "Failed to create 403.4 redirect page at path: $WebSite.PhysicalPath`\$4034Page";
+					Write-Error "Failed to create 403.4 redirect page at path: $($WebSite.PhysicalPath)\$4034Page";
 				}
 			}
 		}
@@ -240,7 +240,7 @@ Function ConfigureSSLRedirect($SiteID) {
 			If (($HttpError).HttpErrorCode -eq "403" -and ($HttpError).HttpErrorSubCode -eq "4") {
 				Write-Output $HttpError;
 				
-				($HttpError).HandlerLocation = "$SitePath`\$4034Page";
+				($HttpError).HandlerLocation = "$SitePath\$4034Page";
 			}
 		}
 	}

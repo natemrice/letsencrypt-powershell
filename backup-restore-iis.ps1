@@ -223,15 +223,15 @@ Function BackupIISConfig() {
 		$IisBackPath = CheckForIisBackVbs;
 		If ($IisBackPath.Length -eq 0){Return $False}
 		
-		$BeforeBackups = .\list-backups-iis.ps1;
+		$BeforeBackups = @(.\list-backups-iis.ps1);
 		
 		$Backup = "$WinDir\System32\cscript.exe $IisBackPath /backup /b letsencrypt$TimeStamp";
 		#Write-Host $Backup;
 		$BackupResults = ((iex $Backup) | Out-String);
 		
-		$AfterBackups = .\list-backups-iis.ps1;
+		$AfterBackups = @(.\list-backups-iis.ps1);
 		
-		If ($BeforeBackups -eq $AfterBackups) {
+		If ($BeforeBackups.Count -eq $AfterBackups.Count) {
 			#If backups are exactly the same, backups
 			#failed.
 			Write-Error "Backups failed: `n $BackupResults";
@@ -252,7 +252,7 @@ Function RestoreIISConfig {
 	param([string]$BackupName)
 	
 	$WinDir = $env:windir;
-	$BackupList = .\list-backups-iis.ps1;
+	$BackupList = @(.\list-backups-iis.ps1);
 
 	#Sanity checks
 	$WindowsVersion = CheckWindowsVersion
@@ -265,7 +265,7 @@ Function RestoreIISConfig {
 	} ElseIf ($BackupName.Length -eq 0) {
 		Write-Error "Backup name is a required parameter.";
 		Return $False;
-	} ElseIf (($BackupList -Match $BackupName).Count -eq 0) {
+	} ElseIf (($BackupList -eq $BackupName).Count -eq 0) {
 		Write-Error "Backup set does not contain the backup!";
 		Return $False;
 	}
@@ -279,7 +279,7 @@ Function RestoreIISConfig {
 			Write-Error $_.Exception.Message;
 			Return $False;
 		}
-	} ElseIf ($WindowsVersion = "2003") {
+	} ElseIf ($WindowsVersion -eq "2003") {
 		$IisBackPath = CheckForIisBackVbs;
 		If ($IisBackPath.Length -eq 0){Return $False}
 		
