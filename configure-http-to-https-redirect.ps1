@@ -20,7 +20,7 @@
 
 $4034Page = "403-4.htm";
 
-Function CheckIISIsInstalled() {
+Function Check-IISIsInstalled() {
 	# Simple check to see if IIS is installed. Piping to >$null
 	# to suppress output and it's PS 2.0+ compatible.
 	Try {
@@ -32,7 +32,7 @@ Function CheckIISIsInstalled() {
 	}
 }
 
-Function CheckWindowsVersion() {
+Function Check-WindowsVersion() {
 	# Backup methods changed from Windows 2003 to Windows 2008+
 	# So using this to detect which version is in use.
 	$OS = [Environment]::OSVersion
@@ -47,13 +47,13 @@ Function CheckWindowsVersion() {
 	}
 }
 
-Function CheckWebScriptingTools(){
+Function Check-WebScriptingTools(){
 	# If this is Windows 2008+ and IIS is installed, we need
 	# scripting tools to manipulate it.
 	
-	If (CheckWindowsVersion -eq "2008") {
+	If (Check-WindowsVersion -eq "2008") {
 		Import-Module servermanager;
-		If (CheckIISIsInstalled) {
+		If (Check-IISIsInstalled) {
 			If ((Get-WindowsFeature Web-Scripting-Tools).Installed) {
 				Return $True;
 			} Else {
@@ -105,21 +105,21 @@ Function Get-BindingObject() {
 	Return $objBinding;
 }
 
-Function GetIIS6Websites() {
+Function Get-IIS6Websites() {
 	# Sanity checks
-	$WindowsVersion = CheckWindowsVersion
+	$WindowsVersion = Check-WindowsVersion
 	If ($WindowsVersion -eq "Incompatible") {
 		Write-Error "This version of Windows is incompatible.";
 		Return $False;
-	} ElseIf (!(CheckIISIsInstalled)) {
+	} ElseIf (!(Check-IISIsInstalled)) {
 		Write-Error "IIS was not detected.";
 		Return $False;
 	}
-	CheckWebScriptingTools
+	Check-WebScriptingTools
 
-	$IISWMIServerSetting = get-wmiobject -namespace "root/MicrosoftIISv2" -Class IISWebServerSetting;
-	$IISWMIVirtualDirSetting = get-wmiobject -namespace "root/MicrosoftIISv2" -Class IIsWebVirtualDirSetting;
-	$IISWMIWebServer = get-wmiobject -namespace "root/MicrosoftIISv2" -Class IIsWebServer;
+	$IISWMIServerSetting = Get-WmiObject -namespace "root/MicrosoftIISv2" -Class IISWebServerSetting;
+	$IISWMIVirtualDirSetting = Get-WmiObject -namespace "root/MicrosoftIISv2" -Class IIsWebVirtualDirSetting;
+	$IISWMIWebServer = Get-WmiObject -namespace "root/MicrosoftIISv2" -Class IIsWebServer;
 	
 	$Sites = @()
 	ForEach ($Site In $IISWMIServerSetting) {
@@ -167,11 +167,11 @@ Function GetIIS6Websites() {
 	Return $Sites;
 }
 
-Function GetActiveIPs(){
+Function Get-ActiveIPs(){
 	# We need a list of IP's assigned to this machine so we
 	# know if they are available to bind SSL to.
 	$ActiveIPs = @();
-	$Nics = (get-WmiObject Win32_NetworkAdapterConfiguration) | Where-Object {$_.IPAddress.Length -gt 0}
+	$Nics = (Get-WmiObject Win32_NetworkAdapterConfiguration) | Where-Object {$_.IPAddress.Length -gt 0}
 	ForEach ($ActiveNic In $Nics) {
 		ForEach ($IP In $ActiveNic.IPAddress) {
 			$ActiveIPs += $IP;
@@ -181,7 +181,7 @@ Function GetActiveIPs(){
 	Return $ActiveIPs;
 }
 
-Function SetRequireSSL($SiteID) {
+Function Set-RequireSSL($SiteID) {
 	Set-WMIInstance -Path "\\localhost\root\MicrosoftIISv2:IIsWebVirtualDirSetting='W3SVC/$SiteID/root'" -argument @{AccessSSLFlags="264"} | Out-Null;
 }
 
@@ -197,7 +197,7 @@ Function ConfigureSSLRedirect($SiteID) {
 	If (Get-Command Get-Website -CommandType Cmdlet -errorAction SilentlyContinue) {
 		$WebSites = Get-Website;
 	} Else {
-		$WebSites = GetIIS6Websites;
+		$WebSites = Get-IIS6Websites;
 	}
 	
 	If ($WebSites.Count -eq 0) { 
@@ -229,7 +229,7 @@ Function ConfigureSSLRedirect($SiteID) {
 	# This doesn't work yet...
 	# Now we will cycle through each site and set the 403.4
 	# page to use the custom 403.4 redirect page.
-	$IISWMIVirtualDirSetting = get-wmiobject -namespace "root/MicrosoftIISv2" -Class IIsWebVirtualDirSetting
+	$IISWMIVirtualDirSetting = Get-WmiObject -namespace "root/MicrosoftIISv2" -Class IIsWebVirtualDirSetting
 	ForEach ($Site In $IISWMIVirtualDirSetting) {
 		$HttpErrorCode = $Site.HttpErrorCode;
 		$HttpErrorSubCode = $Site.HttpErrorSubCode;
@@ -251,7 +251,7 @@ Function ConfigureSSLRedirect($SiteID) {
 #MultiString Array
 #[string[]]$NewHttpErrors = @()
 
-#SetRequireSSL 87257621
+#Set-RequireSSL 87257621
 
 
 

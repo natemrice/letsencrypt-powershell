@@ -13,7 +13,7 @@
 # ------------------------------------------------------------------------
 
 
-Function CheckWindowsVersion() {
+Function Check-WindowsVersion() {
 	# Backup methods changed from Windows 2003 to Windows 2008+
 	# So using this to detect which version is in use.
 	$OS = [Environment]::OSVersion
@@ -28,7 +28,7 @@ Function CheckWindowsVersion() {
 	}
 }
 
-Function CheckIISIsInstalled() {
+Function Check-IISIsInstalled() {
 	# Simple check to see if IIS is installed. Piping to >$null
 	# to suppress output and it's PS 2.0+ compatible.
 	Try {
@@ -40,15 +40,15 @@ Function CheckIISIsInstalled() {
 	}
 }
 
-Function CheckWebScriptingTools(){
+Function Check-WebScriptingTools(){
 	# If this is Windows 2008+ and IIS is installed, we need
 	# scripting tools to manipulate it.
 	# ToDo: add error handling to the install portion and
 	# halt the script on failure.
 	
-	If (CheckWindowsVersion = "2008") {
+	If (Check-WindowsVersion = "2008") {
 		Import-Module servermanager;
-		If (CheckIISIsInstalled) {
+		If (Check-IISIsInstalled) {
 			If ((Get-WindowsFeature Web-Scripting-Tools).Installed) {
 				Return $True;
 			} Else {
@@ -189,15 +189,15 @@ Function BackupIISConfig() {
 	$TimeStamp = get-date -uFormat "%Y%m%d%H%M%S";
 	
 	# Sanity checks
-	$WindowsVersion = CheckWindowsVersion
+	$WindowsVersion = Check-WindowsVersion
 	If ($WindowsVersion -eq "Incompatible") {
 		Write-Error "This version of Windows is incompatible.";
 		Return $False;
-	} ElseIf (!(CheckIISIsInstalled)) {
+	} ElseIf (!(Check-IISIsInstalled)) {
 		Write-Error "IIS was not detected.";
 		Return $False;
 	}
-	CheckWebScriptingTools
+	Check-WebScriptingTools
 
 	# If the Backup-WebConfiguration command exists we'll use that
 	# as it's the preferred way.
@@ -255,11 +255,11 @@ Function RestoreIISConfig {
 	$BackupList = @(.\list-backups-iis.ps1);
 
 	#Sanity checks
-	$WindowsVersion = CheckWindowsVersion
+	$WindowsVersion = Check-WindowsVersion
 	If ($WindowsVersion -eq "Incompatible") {
 		Write-Error "This version of Windows is incompatible.";
 		Return $False;
-	} ElseIf (!(CheckIISIsInstalled)) {
+	} ElseIf (!(Check-IISIsInstalled)) {
 		Write-Error "IIS was not detected.";
 		Return $False;
 	} ElseIf ($BackupName.Length -eq 0) {

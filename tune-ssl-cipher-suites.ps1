@@ -17,7 +17,7 @@
 #
 # ------------------------------------------------------------------------
 
-Function CheckWindowsVersion() {
+Function Check-WindowsVersion() {
 	#Supported Ciphers/Protocols vary between versions.
 	$OS = [Environment]::OSVersion
 	If ($OS.Version.Major -ge 6 -and $OS.Version.Minor -ge 1) {
@@ -37,7 +37,7 @@ Function TuneSSLCiphers() {
 	#This will fail if the user doesn't have rights,
 	#possibly we should check for admin rights here.
 
-	$WindowsVersion = CheckWindowsVersion
+	$WindowsVersion = Check-WindowsVersion
 	
 	#Disable insecure protocols
 	New-Item 'HKLM:\SYSTEM\CurrentControlSet\Control\SecurityProviders\SCHANNEL\Protocols\Multi-Protocol Unified Hello\Server' -Force | Out-Null

@@ -1,7 +1,7 @@
 ###TODO:
  - Figuring out how to support various client security enhancements like
 	1. ~~tuning cipher suites~~
-	2. enabling HTTP -> HTTPS redirection
+	2. enabling HTTP -> HTTPS redirection -> WIP: configure-http-to-https-redirect.ps1
 	3. ~~enabling OCSP pinning~~
 		On by default in IIS 7+ according to this, (IIS 6 Unsupported):
 		https://technet.microsoft.com/en-us/library/hh826044%28v=ws.10%29.aspx
